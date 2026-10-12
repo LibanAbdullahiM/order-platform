@@ -8,11 +8,11 @@ A Spring Boot microservices project built with Java 21, Maven, PostgreSQL, and D
 
 Make sure you have the following installed:
 
-* **Java 21** — required to run the application.
-* **Maven** — required to build the application.
-* **Docker Desktop or Docker Engine**.
-* **IntelliJ IDEA** — recommended IDE for running and developing the services.
-* **Git** — for cloning and managing the repository.
+- **Java 21** — required to run the application.
+- **Maven** — required to build the application.
+- **Docker Desktop or Docker Engine**.
+- **IntelliJ IDEA** — recommended IDE for running and developing the services.
+- **Git** — for cloning and managing the repository.
 
 Verify your installations:
 
@@ -24,6 +24,7 @@ Verify your installations:
 ---
 
 ## Project Structure
+
 ```
 order-platform/
 ├── .env.example
@@ -36,6 +37,7 @@ order-platform/
     ├── pom.xml
     └── src/
 ```
+
 The exact structure may evolve as additional services are added.
 
 ---
@@ -58,8 +60,6 @@ For example:
     DB_USER=order_platform_user
     DB_PASSWORD=your_local_password
 
-Use the variable names and values expected by your actual docker-compose.yml.
-
 ---
 
 ## 2. Start PostgreSQL with Docker Compose
@@ -76,7 +76,8 @@ Check the running containers:
 
     docker compose ps
 
-### 3. Configure Environment Variables in IntelliJ IDEA
+## 3. Configure Environment Variables in IntelliJ IDEA
+
 Docker Compose reads .env automatically, but Spring Boot does not automatically load an arbitrary .env file when you run the application directly from IntelliJ IDEA.
 
 To pass the variables to auth-service:
@@ -91,15 +92,15 @@ To pass the variables to auth-service:
 
 ---
 
-### 4. Start auth-service
+## 4. Start auth-service
 
 Ensure Docker Compose is running and the PostgreSQL database is ready.
 
 Start auth-service using the Start button in IntelliJ IDEA..
 
 ---
-## 5. Verify the Health Endpoint
 
+## 5. Verify the Health Endpoint
 
 Once auth-service has started, open the following URL:
 
@@ -116,16 +117,19 @@ Expected response:
 The health endpoint should be accessible without authentication. Other endpoints should remain protected by Spring Security.
 
 ---
+
 ## 6. Stop the Application
 
 Stop auth-service using the Stop button in IntelliJ IDEA.
 
 To stop the Docker Compose services without deleting the database data, run this from the repository root:
 
-    docker compose down
+    docker compose down -v
+
+PostgreSQL initialization script only run on a fresh volume.
 
 ---
 
----
 ## Author
+
 **Liban A M**
