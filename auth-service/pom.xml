@@ -12,12 +12,11 @@
 	<artifactId>auth-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<name>Order Management Platform - Auth Service</name>
+	<description>
+		Authentication service for the Order Management Platform,
+		built with Spring Boot, Spring Security, PostgreSQL, and Flyway.
+	</description>
 
 	<properties>
 		<java.version>21</java.version>
