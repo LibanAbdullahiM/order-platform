@@ -1,0 +1,1 @@
+-- Flyway baseline for database schema migration
