@@ -8,6 +8,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  mvc:
+    problemdetails:
+      enabled: true
 
 server:
   port: 8081

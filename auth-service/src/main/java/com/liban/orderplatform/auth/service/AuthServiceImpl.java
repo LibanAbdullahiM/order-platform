@@ -6,6 +6,7 @@ import com.liban.orderplatform.auth.dto.RegisterRequest;
 import com.liban.orderplatform.auth.dto.UserResponse;
 import com.liban.orderplatform.auth.entity.Role;
 import com.liban.orderplatform.auth.entity.User;
+import com.liban.orderplatform.auth.exception.EmailAlreadyExistException;
 import com.liban.orderplatform.auth.mapper.UserMapper;
 import com.liban.orderplatform.auth.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +42,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponse register(RegisterRequest request) {
+
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistException("Email already exists!");
+        }
 
         //Encode password
         String password_hash = passwordEncoder.encode(request.password());
