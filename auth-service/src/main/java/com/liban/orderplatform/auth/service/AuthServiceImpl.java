@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +53,8 @@ public class AuthServiceImpl implements AuthService {
 
         User user = mapper.toUser(request);
 
-        user.setPassword_hash(password_hash);
-        user.setRole(Role.USER.name());
+        user.setPasswordHash(password_hash);
+        user.setRole(Role.USER);
         user.setEnabled(true);
         user.setCreatedAt(Instant.now());
 
@@ -100,7 +101,8 @@ public class AuthServiceImpl implements AuthService {
 
         assert userDetails != null;
         String email = userDetails.getUsername();
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User not found"));
 
         return mapper.toUserResponse(user);
     }

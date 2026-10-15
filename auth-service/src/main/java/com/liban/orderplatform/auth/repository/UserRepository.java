@@ -5,10 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+import java.util.UUID;
 
-    User findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, UUID> {
 
-    @Query("SELECT CASE WHEN COUNT(user) > 0 THEN TRUE ELSE FALSE END FROM User user WHERE user.email = :email")
-    boolean existsByEmail(@Param("email") String email);
+    Optional<User> findByEmail(String email);
+
+   boolean existsByEmail(@Param("email") String email);
 }
