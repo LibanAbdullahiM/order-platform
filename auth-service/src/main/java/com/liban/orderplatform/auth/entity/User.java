@@ -22,13 +22,14 @@ public class User {
     private String email;
 
     @Column(name = "password_hash", nullable = false)
-    private String password_hash;
+    private String passwordHash;
 
     @Column(name = "role", nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "enabled")
-    private Boolean enabled;
+    private boolean enabled;
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -36,12 +37,12 @@ public class User {
     public User(){}
 
     public User(String email,
-                String password_hash,
-                String role,
-                Boolean enabled,
+                String passwordHash,
+                Role role,
+                boolean enabled,
                 Instant createdAt) {
         this.email = email;
-        this.password_hash = password_hash;
+        this.passwordHash = passwordHash;
         this.role = role;
         this.enabled = enabled;
         this.createdAt = createdAt;
