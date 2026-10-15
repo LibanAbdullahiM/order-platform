@@ -49,7 +49,7 @@ class JwtServiceTest {
         // Assert
         assertTrue(valid);
         assertNotNull(token);
-        assertEquals(subject, user.getUsername());
+        assertEquals(subject, jwtService.extractSubject(token));
     }
 
     @Test

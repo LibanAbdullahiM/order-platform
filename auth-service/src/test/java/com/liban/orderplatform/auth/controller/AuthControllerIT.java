@@ -1,15 +1,21 @@
 package com.liban.orderplatform.auth.controller;
 
+import com.liban.orderplatform.auth.PostgresTestConfiguration;
 import com.liban.orderplatform.auth.dto.AuthResponse;
 import com.liban.orderplatform.auth.dto.LoginRequest;
 import com.liban.orderplatform.auth.dto.RegisterRequest;
+import com.liban.orderplatform.auth.repository.UserRepository;
 import com.liban.orderplatform.auth.service.AuthService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -25,21 +31,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
+@ActiveProfiles("test")
+@Import(PostgresTestConfiguration.class)
 class AuthControllerIT {
 
-    @Container
-    @ServiceConnection
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-         "postgres:16-alpine")
-            .withDatabaseName("auth-test")
-            .withUsername("test")
-            .withPassword("test");
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    UserRepository repository;
+
+    @BeforeEach
+    void beforeEach() {
+
+        repository.deleteAll();
+
+        RegisterRequest request = new RegisterRequest(
+                "test@gmail.com",
+                "test@1234"
+        );
+
+        authService.register(request);
+
+    }
 
     @Test
     void register() throws Exception {
@@ -59,10 +80,46 @@ class AuthControllerIT {
     }
 
     @Test
+    void registerWithInvalidRequestBody() throws Exception {
+        RegisterRequest request = new RegisterRequest(
+                "",
+                ""
+        );
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.instance").value("/api/auth/register"))
+                .andExpect(jsonPath("$.title").value("Bad Request"))
+                .andExpect(jsonPath("$.detail").value("Validation failed"))
+                .andExpect(jsonPath("$.errors").exists());
+
+    }
+
+
+    @Test
+    void registerWithDuplicateEmail() throws Exception {
+        RegisterRequest request = new RegisterRequest(
+                "test@gmail.com",
+                "liban@1234"
+        );
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.instance").value("/api/auth/register"))
+                .andExpect(jsonPath("$.title").value("Conflict"))
+                .andExpect(jsonPath("$.detail").exists());
+
+    }
+
+    @Test
     void loginAndGetCurrentUser() throws Exception {
         LoginRequest request = new LoginRequest(
-                "liban4243@gmail.com",
-                "liban@1234"
+                "test@gmail.com",
+                "test@1234"
         );
 
         MvcResult result = mockMvc.perform(post("/api/auth/login")
@@ -81,17 +138,28 @@ class AuthControllerIT {
                         .header("Authorization", "Bearer " + authResponse.token()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.email").value("liban4243@gmail.com"))
+                .andExpect(jsonPath("$.email").value("test@gmail.com"))
                 .andExpect(jsonPath("$.role").exists());
 
 
     }
 
     @Test
+    void requestWithoutToken() throws Exception {
+
+        mockMvc.perform(get("/api/auth/me")
+                        .header("Authorization", "Bearer "))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.instance").value("/api/auth/me"))
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.detail").exists());
+    }
+
+    @Test
     void shouldFailLogin() throws Exception {
         LoginRequest request = new LoginRequest(
-                "liban4243@gmail.com",
-                "liban@"
+                "test@gmail.com",
+                "test@"
         );
 
         mockMvc.perform(post("/api/auth/login")
