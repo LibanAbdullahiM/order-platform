@@ -42,7 +42,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .subject(subject)
-                .claim("role", role)
+                .claim("role", "ROLE_"+role)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expireAt))
                 .signWith(signingKey)
