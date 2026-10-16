@@ -9,6 +9,7 @@ import com.liban.orderplatform.auth.entity.User;
 import com.liban.orderplatform.auth.exception.EmailAlreadyExistException;
 import com.liban.orderplatform.auth.mapper.UserMapper;
 import com.liban.orderplatform.auth.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,12 +62,19 @@ public class AuthServiceImpl implements AuthService {
         user.setEnabled(true);
         user.setCreatedAt(Instant.now());
 
+        User savedUser = null;
 
-        //save the User entity
-        User savedUser = userRepository.save(user);
 
+        try {
+            //save the User entity
+            savedUser = userRepository.save(user);
+
+        }catch (DataIntegrityViolationException exception) {
+            throw new EmailAlreadyExistException("Email already exists!");
+        }
 
         return mapper.toUserResponse(savedUser);
+
     }
 
     @Override
