@@ -90,7 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticationEntryPoint.commence(
                     request,
                     response,
-                    new CredentialsExpiredException("Invalid or expired token", ex)
+                    new BadCredentialsException("Invalid or expired token", ex)
             );
             return;
         }catch (AuthenticationException ex) {

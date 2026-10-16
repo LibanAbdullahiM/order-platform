@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -29,10 +30,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         String message;
-        String header = request.getHeader("Authorization");
 
-        if (header == null || header.isEmpty()) {
-            message = "Authorization required";
+        if (authException instanceof InsufficientAuthenticationException) {
+            message = "Authentication required";
         }else {
             message = authException.getMessage();
         }
