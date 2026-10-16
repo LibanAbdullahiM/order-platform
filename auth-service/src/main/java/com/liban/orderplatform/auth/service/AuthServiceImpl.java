@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    @Override
+
     public UserResponse register(RegisterRequest request) {
 
         String email = request.email().trim().toLowerCase();
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-    @Override
+
     public AuthResponse login(LoginRequest request) {
 
         String email = request.email().trim().toLowerCase();
@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    @Override
+
     public UserResponse getCurrentUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

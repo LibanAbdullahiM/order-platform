@@ -4,7 +4,7 @@ import com.liban.orderplatform.auth.dto.AuthResponse;
 import com.liban.orderplatform.auth.dto.LoginRequest;
 import com.liban.orderplatform.auth.dto.RegisterRequest;
 import com.liban.orderplatform.auth.dto.UserResponse;
-import com.liban.orderplatform.auth.service.AuthService;
+import com.liban.orderplatform.auth.service.AuthServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    private final AuthServiceImpl authService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthServiceImpl authService) {
         this.authService = authService;
     }
 

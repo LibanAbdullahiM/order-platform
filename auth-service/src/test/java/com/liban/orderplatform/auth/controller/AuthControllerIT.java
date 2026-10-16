@@ -5,21 +5,17 @@ import com.liban.orderplatform.auth.dto.AuthResponse;
 import com.liban.orderplatform.auth.dto.LoginRequest;
 import com.liban.orderplatform.auth.dto.RegisterRequest;
 import com.liban.orderplatform.auth.repository.UserRepository;
-import com.liban.orderplatform.auth.service.AuthService;
-import org.junit.jupiter.api.BeforeAll;
+import com.liban.orderplatform.auth.service.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import tools.jackson.databind.ObjectMapper;
 
@@ -43,7 +39,7 @@ class AuthControllerIT {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     @Autowired
     UserRepository repository;
