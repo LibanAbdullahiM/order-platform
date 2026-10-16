@@ -44,15 +44,18 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponse register(RegisterRequest request) {
 
-        if (userRepository.existsByEmail(request.email())) {
+        String email = request.email().trim().toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
             throw new EmailAlreadyExistException("Email already exists!");
         }
 
         //Encode password
         String password_hash = passwordEncoder.encode(request.password());
 
-        User user = mapper.toUser(request);
+        User user = new  User();
 
+        user.setEmail(email);
         user.setPasswordHash(password_hash);
         user.setRole(Role.USER);
         user.setEnabled(true);
@@ -69,9 +72,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest request) {
 
+        String email = request.email().trim().toLowerCase();
+
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.email(),
+                        email,
                         request.password()
                 )
         );
