@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 
 import java.net.URI;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public final class ProblemDetailsFactory {
             problem.setInstance(URI.create(path));
         }
 
-        problem.setProperty("timestamp", LocalDateTime.now());
+        problem.setProperty("timestamp", Instant.now());
 
         if  (errors != null && !errors.isEmpty()) {
             problem.setProperty("errors", errors);

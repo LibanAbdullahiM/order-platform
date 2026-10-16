@@ -31,7 +31,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpServletResponse.SC_UNAUTHORIZED,
                 "Unauthorized",
-                "Jwt Token is invalid",
+                authException.getMessage(),
                 request.getRequestURI(),
                 null
         );

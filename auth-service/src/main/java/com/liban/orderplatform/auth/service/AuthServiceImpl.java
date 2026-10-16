@@ -78,7 +78,6 @@ public class AuthServiceImpl implements AuthService {
 
          UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        assert userDetails != null;
         String subject = userDetails.getUsername();
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
 

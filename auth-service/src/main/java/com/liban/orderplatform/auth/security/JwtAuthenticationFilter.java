@@ -9,9 +9,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +36,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+
+        return path.equals("/api/auth/register")
+                || path.equals("/api/auth/login")
+                || path.equals("/actuator/health/");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -41,18 +54,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
+        if (header == null || header.isEmpty()) {
+            SecurityContextHolder.clearContext();
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new BadCredentialsException("Authorization required")
+            );
+            return;
+        }
+
+        if (header.startsWith("Bearer ")) {
+            token = header.substring(7);
+        }
+
+        if (token == null || token.isEmpty()) {
+            SecurityContextHolder.clearContext();
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    new BadCredentialsException("Jwt Token is invalid")
+            );
+            return;
+        }
+
         try {
 
-            if (header != null && header.startsWith("Bearer ")) {
-                token = header.substring(7);
-            }
-
-            if (token != null && !token.isEmpty()) {
-                username = jwtService.extractSubject(token);
-            }
+            username = jwtService.extractSubject(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                if (!userDetails.isEnabled()) {
+                    throw new DisabledException("Account is disabled");
+                }
 
                 if (jwtService.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken auth =
@@ -69,7 +104,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authenticationEntryPoint.commence(
                     request,
                     response,
-                    new BadCredentialsException("Jwt Token is invalid", ex)
+                    new CredentialsExpiredException("Invalid or expired token", ex)
+            );
+            return;
+        }catch (AuthenticationException ex) {
+            SecurityContextHolder.clearContext();
+            authenticationEntryPoint.commence(
+                    request,
+                    response,
+                    ex
             );
             return;
         }
