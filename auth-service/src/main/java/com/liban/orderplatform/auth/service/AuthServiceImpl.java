@@ -108,11 +108,17 @@ public class AuthServiceImpl {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        assert auth != null;
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
 
-        assert userDetails != null;
-        String email = userDetails.getUsername();
+        UserDetails userDetails = null;
+        if (auth != null) {
+            userDetails = (UserDetails) auth.getPrincipal();
+        }
+
+        String email = null;
+        if (userDetails != null) {
+            email = userDetails.getUsername();
+        }
+
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
 
