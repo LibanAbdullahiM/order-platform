@@ -25,11 +25,21 @@ public class JwtService {
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.expiration-minutes:60}") long expirationMinutes) {
 
+        if (secretKey == null || secretKey.isEmpty()) {
+            throw new IllegalStateException(
+                    "JWT_SECRET must be valid Base64 and decode to at least 32 bytes");
+        }
+
         byte[] keyBytes;
         try {
             keyBytes = Decoders.BASE64.decode(secretKey);
-        }catch (IllegalStateException e) {
-            throw new IllegalStateException("JWT_SECRET must be valid Base64", e);
+        }catch (RuntimeException e) {
+            throw new IllegalStateException( "JWT_SECRET must be valid Base64 and decode to at least 32 bytes", e);
+        }
+
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException(
+                    "JWT_SECRET must be valid Base64 and decode to at least 32 bytes");
         }
 
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
