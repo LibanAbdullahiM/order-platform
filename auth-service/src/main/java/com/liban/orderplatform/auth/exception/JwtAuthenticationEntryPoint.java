@@ -28,10 +28,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/problem+json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+        String message;
+        String header = request.getHeader("Authorization");
+
+        if (header == null || header.isEmpty()) {
+            message = "Authorization required";
+        }else {
+            message = authException.getMessage();
+        }
+
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpServletResponse.SC_UNAUTHORIZED,
                 "Unauthorized",
-                authException.getMessage(),
+                message,
                 request.getRequestURI(),
                 null
         );

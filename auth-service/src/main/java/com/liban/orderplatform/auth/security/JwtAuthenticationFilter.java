@@ -36,15 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String path = request.getServletPath();
-
-        return path.equals("/api/auth/register")
-                || path.equals("/api/auth/login")
-                || path.equals("/actuator/health/");
-    }
-
-    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -55,12 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
 
         if (header == null || header.isEmpty()) {
-            SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new BadCredentialsException("Authorization required")
-            );
+            filterChain.doFilter(request, response);
             return;
         }
 
