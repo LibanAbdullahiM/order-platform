@@ -23,7 +23,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException ex,
+    public ResponseEntity<ProblemDetail> handleValidationError(MethodArgumentNotValidException ex,
                                                    HttpServletRequest request) {
 
         Map<String, List<String>> errors = new HashMap<>();
@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyExistException.class)
-    public ResponseEntity<?> handleEmailAlreadyExistException(EmailAlreadyExistException ex,
+    public ResponseEntity<ProblemDetail> handleEmailAlreadyExistException(EmailAlreadyExistException ex,
                                                               HttpServletRequest request) {
 
         ProblemDetail problem = ProblemDetailsFactory.create(
@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException ex,
+    public ResponseEntity<ProblemDetail> handleBadCredentialsException(BadCredentialsException ex,
                                                            HttpServletRequest request) {
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpStatus.UNAUTHORIZED.value(),
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<?> handleAuthenticationException(DisabledException ex,
+    public ResponseEntity<ProblemDetail> handleAuthenticationException(DisabledException ex,
                                                            HttpServletRequest request) {
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpStatus.UNAUTHORIZED.value(),

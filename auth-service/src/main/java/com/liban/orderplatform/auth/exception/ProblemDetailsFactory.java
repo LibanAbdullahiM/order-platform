@@ -11,7 +11,7 @@ import java.util.Map;
 
 public final class ProblemDetailsFactory {
 
-    public ProblemDetailsFactory() {}
+    private ProblemDetailsFactory() {}
 
     public static ProblemDetail create(int status, String error, String message, String path,
                                                Map<String, List<String>> errors) {
