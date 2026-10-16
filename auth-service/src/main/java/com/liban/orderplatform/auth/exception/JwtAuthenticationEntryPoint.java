@@ -31,7 +31,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         String message;
 
-        if (authException instanceof InsufficientAuthenticationException) {
+        Object authError = request.getAttribute("auth.error");
+
+
+        if (authError instanceof String errorMessage) {
+            message = errorMessage;
+        }else if (authException instanceof InsufficientAuthenticationException) {
             message = "Authentication required";
         }else {
             message = authException.getMessage();

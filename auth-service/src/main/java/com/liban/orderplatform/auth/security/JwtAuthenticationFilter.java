@@ -45,22 +45,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        if (header == null || header.isEmpty()) {
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (header.startsWith("Bearer ")) {
-            token = header.substring(7);
-        }
 
-        if (token == null || token.isEmpty()) {
+        token = header.substring(7);
+
+
+        if (token.isEmpty()) {
             SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new BadCredentialsException("Jwt Token is invalid")
-            );
+            request.setAttribute("auth.error", "Invalid or expired token");
+            filterChain.doFilter(request, response);
             return;
         }
 
