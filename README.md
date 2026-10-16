@@ -1,7 +1,6 @@
 # Order Management Platform
 
-A Spring Boot microservices project built with Java 21, Maven, PostgreSQL, Flyway, and Docker Compose. The `auth-service` provides user registration, login, and JWT-based authentication.
----
+## A Spring Boot microservices project built with Java 21, Maven, PostgreSQL, Flyway, and Docker Compose. The `auth-service` provides user registration, login, and JWT-based authentication.
 
 ## Prerequisite
 
@@ -188,7 +187,7 @@ curl http://localhost:8081/actuator/health
 Expected response:
 
 ```json
-{"status":"UP"}
+{ "status": "UP" }
 ```
 
 The health endpoint, registration, and login are permitted without a JWT. Other endpoints require a valid JWT. Authentication errors should return JSON rather than an HTML login page.
@@ -209,8 +208,9 @@ first you need to JWT_SECRET to enviroment variable before you run the test comm
 for windows open cmd/powershel and run
 
 ```bash
-$env:JWT_SECRET="replace_with_a_random_secret_at_least_32_bytes_long"
+$env:JWT_SECRET="replacewitharandomsecretatleast32byteslong"
 ```
+
 verify it
 
 ```bash
@@ -222,6 +222,7 @@ On macOS
 ```bash
 export JWT_SECRET="THE_VALUE"
 ```
+
 verify it
 
 ```bash
