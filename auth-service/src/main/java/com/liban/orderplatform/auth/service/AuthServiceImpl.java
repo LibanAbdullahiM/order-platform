@@ -11,6 +11,7 @@ import com.liban.orderplatform.auth.mapper.UserMapper;
 import com.liban.orderplatform.auth.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,10 +90,12 @@ public class AuthServiceImpl {
                 )
         );
 
-         UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new BadCredentialsException("Invalid email or Password"));
 
-        String subject = userDetails.getUsername();
-        String role = userDetails.getAuthorities().iterator().next().getAuthority();
+
+        String subject = user.getEmail();
+        String role = user.getRole().name();
 
         String token = jwtService.generateToken(subject, role);
 

@@ -51,11 +51,9 @@ public class JwtService {
         Instant now = Instant.now();
         Instant expireAt =  now.plusSeconds(expiresInSeconds);
 
-        String[] roleParts = role.split("_");
-
         return Jwts.builder()
                 .subject(subject)
-                .claim("role", roleParts[1])
+                .claim("role", role)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expireAt))
                 .signWith(signingKey)
