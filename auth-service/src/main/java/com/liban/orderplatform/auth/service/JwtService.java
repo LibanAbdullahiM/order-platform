@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -50,9 +51,11 @@ public class JwtService {
         Instant now = Instant.now();
         Instant expireAt =  now.plusSeconds(expiresInSeconds);
 
+        String[] roleParts = role.split("_");
+
         return Jwts.builder()
                 .subject(subject)
-                .claim("role", "ROLE_"+role)
+                .claim("role", roleParts[1])
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expireAt))
                 .signWith(signingKey)
