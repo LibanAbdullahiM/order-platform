@@ -1,0 +1,3 @@
+jwt:
+  secret: lYPBLzPrKz9kZkbulY9iQAFlXw2lGqstJOk0t4muj8Y=
+  expiration-minutes: 60
