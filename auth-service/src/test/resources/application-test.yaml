@@ -1,3 +1,7 @@
 jwt:
   secret: lYPBLzPrKz9kZkbulY9iQAFlXw2lGqstJOk0t4muj8Y=
   expiration-minutes: 60
+
+admin:
+  email: test-admin@email.com
+  password: test-password123
