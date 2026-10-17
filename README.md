@@ -58,8 +58,11 @@ For example:
     DB_USER=order_platform_user
     DB_PASSWORD=your_local_password
 
-    JWT_SECRET=replace_with_a_random_secret_at_least_32_bytes_long
+    JWT_SECRET=replacewitharandomsecretatleast32byteslong
     JWT_EXPIRATION_MINUTES=60
+
+    ADMIN_EMAIL=test-admin@x.com
+    ADMIN_PASSWORD=test-password123
 
 ---
 
