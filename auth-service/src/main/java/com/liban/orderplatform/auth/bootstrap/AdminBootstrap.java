@@ -19,23 +19,23 @@ import java.time.Instant;
 @Component
 public class AdminBootstrap implements ApplicationRunner {
 
-    private final Environment environment;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AdminProperties adminProperties;
 
-    public AdminBootstrap(Environment environment,
-                          UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
-        this.environment = environment;
+    public AdminBootstrap(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          AdminProperties adminProperties) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminProperties = adminProperties;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        String email = environment.getProperty("admin.email").trim().toLowerCase();
-        String password = environment.getProperty("admin.password").trim().toLowerCase();
+        String email = adminProperties.email().trim().toLowerCase();
+        String password = adminProperties.password().trim().toLowerCase();
 
         boolean hasEmail = StringUtils.hasText(email);
         boolean hasPassword = StringUtils.hasText(password);
