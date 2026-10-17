@@ -50,6 +50,7 @@ class JwtServiceTest {
         assertTrue(valid);
         assertNotNull(token);
         assertEquals(subject, jwtService.extractSubject(token));
+        assertEquals(role, jwtService.extractRole(token));
     }
 
     @Test
