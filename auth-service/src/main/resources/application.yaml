@@ -8,9 +8,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-#  mvc:
-#    problemdetails:
-#      enabled: true
 
 server:
   port: 8081
@@ -18,3 +15,7 @@ server:
 jwt:
   secret: ${JWT_SECRET}
   expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}
+
+admin:
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASSWORD}
