@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 if (!userDetails.isEnabled()) {
-                    throw new DisabledException("Account is disabled");
+                    throw new DisabledException("Invalid or expired token");
                 }
 
                 if (jwtService.validateToken(token, userDetails)) {
@@ -82,22 +82,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-        }catch (JwtException  ex) {
+        }catch (JwtException | AuthenticationException ex) {
             SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new BadCredentialsException("Invalid or expired token", ex)
-            );
-            return;
-        }catch (AuthenticationException ex) {
-            SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    ex
-            );
-            return;
+            request.setAttribute("auth.error", "Invalid or expired token");
+
         }
 
         filterChain.doFilter(request, response);

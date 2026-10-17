@@ -33,7 +33,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         Object authError = request.getAttribute("auth.error");
 
-
         if (authError instanceof String errorMessage) {
             message = errorMessage;
         }else if (authException instanceof InsufficientAuthenticationException) {

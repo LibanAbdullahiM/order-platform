@@ -84,7 +84,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Unauthorized",
-                "Account is disabled",
+                "Invalid email or password",
                 request.getRequestURI(),
                 null
         );
@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = ProblemDetailsFactory.create(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal server error",
-                "An unexpected error occured",
+                "An unexpected error occurred",
                 request.getRequestURI(),
                 null
         );
