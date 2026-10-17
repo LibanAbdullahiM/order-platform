@@ -152,6 +152,35 @@ class AuthControllerIT {
     }
 
     @Test
+    void requestWithGarbageBearerToken() throws Exception {
+
+        mockMvc.perform(get("/api/auth/me")
+                .header("Authorization", "Bearer 0123456789abcdef0123456789abcdef"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.instance").value("/api/auth/me"))
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.detail").value("Invalid or expired token"));
+
+    }
+
+    @Test
+    void shouldSucceedLoginWithGarbageToken() throws Exception {
+        LoginRequest request = new LoginRequest(
+                "test@gmail.com",
+                "test@1234"
+        );
+
+        mockMvc.perform(post("/api/auth/login")
+                        .header("Authorization", "Bearer 0123456789abcdef0123456789abcdef")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.tokenType").value("Bearer"))
+                .andExpect(jsonPath("$.expiresInSeconds").exists());
+    }
+
+    @Test
     void shouldFailLogin() throws Exception {
         LoginRequest request = new LoginRequest(
                 "test@gmail.com",
