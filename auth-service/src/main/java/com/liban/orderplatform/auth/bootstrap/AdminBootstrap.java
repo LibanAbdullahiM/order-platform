@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -73,19 +74,24 @@ public class AdminBootstrap implements ApplicationRunner {
 
     private void registerAdmin(String email, String password) {
 
-        String passwordHash = passwordEncoder.encode(password);
+        try {
+            String passwordHash = passwordEncoder.encode(password);
 
-        User user = new User();
+            User user = new User();
 
-        user.setEmail(email);
-        user.setPasswordHash(passwordHash);
-        user.setRole(Role.ADMIN);
-        user.setEnabled(true);
-        user.setCreatedAt(Instant.now());
+            user.setEmail(email);
+            user.setPasswordHash(passwordHash);
+            user.setRole(Role.ADMIN);
+            user.setEnabled(true);
+            user.setCreatedAt(Instant.now());
 
-        User savedUser = userRepository.save(user);
+            User savedUser = userRepository.save(user);
 
-        log.info("Admin is created with email: {}", savedUser.getEmail());
+            log.info("Admin is created with email: {}", savedUser.getEmail());
+
+        }catch(DataIntegrityViolationException ex) {
+            log.info("Admin already exists with email: {}", email);
+        }
     }
 
     private boolean isValidPassword(String password) {
