@@ -61,8 +61,10 @@ For example:
     JWT_SECRET=replacewitharandomsecretatleast32byteslong
     JWT_EXPIRATION_MINUTES=60
 
-    ADMIN_EMAIL=test-admin@x.com
-    ADMIN_PASSWORD=test-password123
+Optional: you can configure these variabls to setup the admin bootstrap on startup application
+
+    #ADMIN_EMAIL=
+    #ADMIN_PASSWORD=use-strong-password-here
 
 ---
 
