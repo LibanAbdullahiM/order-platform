@@ -17,5 +17,5 @@ jwt:
   expiration-minutes: ${JWT_EXPIRATION_MINUTES:60}
 
 admin:
-  email: ${ADMIN_EMAIL}
-  password: ${ADMIN_PASSWORD}
+  email: ${ADMIN_EMAIL:}
+  password: ${ADMIN_PASSWORD:}
