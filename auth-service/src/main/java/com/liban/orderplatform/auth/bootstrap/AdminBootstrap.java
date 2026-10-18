@@ -6,13 +6,11 @@ import com.liban.orderplatform.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.print.DocFlavor;
 import java.time.Instant;
 
 @Slf4j
@@ -35,40 +33,45 @@ public class AdminBootstrap implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         String email = adminProperties.email().trim().toLowerCase();
-        String password = adminProperties.password().trim().toLowerCase();
+        String password = adminProperties.password();
 
         boolean hasEmail = StringUtils.hasText(email);
         boolean hasPassword = StringUtils.hasText(password);
 
         if (!hasEmail && !hasPassword) {
-            log.info("(AdminBootstrap is skipped: No admin credentials configured.");
+            log.info("AdminBootstrap is skipped: No admin credentials configured.");
             return;
         }
 
         if (hasEmail ^ hasPassword) {
             String missingProp = !hasEmail ? "ADMIN_EMAIL" : "ADMIN_PASSWORD";
             throw new IllegalStateException("Failed to initialize AdminBootstrap: " +
-                    "Half-configured admin credentials." +
+                    "Half-configured admin credentials. " +
                     "Missing required property: " +  missingProp);
 
         }
 
         if (!isValidPassword(password)) {
             throw new IllegalStateException("Failed to initialize AdminBootstrap: " +
-                    "Provided admin password does not satisfy security policy requirements.).");
+                    "Provided admin password does not satisfy security policy requirements. " +
+                    "ADMIN_PASSWORD must be 8 to 72 characters");
         }
 
-        boolean emailExists = userRepository.existsByEmail(email);
-        User detactedUser = userRepository.findByEmail(email).orElse(null);
+        User existing = userRepository.findByEmail(email).orElse(null);
 
-        if (detactedUser != null && emailExists && detactedUser.getRole().equals(Role.USER)) {
-            log.warn("User with email {} already exists as USER. Skipping admin creation.", email);
+        if (existing != null) {
+            String role = existing.getRole().name().equals("USER") ? "USER" : "ADMIN";
+            String message =
+                            "User with email " + email + " already exists as " + role + ". Skipping admin creation.";
+            if (role.equals("ADMIN")) {
+                log.info(message);
+            }else {
+                log.warn(message);
+            }
             return;
         }
 
-        if (!emailExists) {
-            registerAdmin(email, password);
-        }
+        registerAdmin(email, password);
 
     }
 

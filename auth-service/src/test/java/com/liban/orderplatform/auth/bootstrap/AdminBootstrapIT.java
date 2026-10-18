@@ -45,7 +45,7 @@ public class AdminBootstrapIT {
     void loginAndMe() throws Exception {
         LoginRequest request = new LoginRequest(
                 "test-admin@email.com",
-                "test-password123"
+                "Test-Password123"
         );
 
         //Test /login
@@ -68,6 +68,22 @@ public class AdminBootstrapIT {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.email").value(request.email()))
                 .andExpect(jsonPath("$.role").value("ADMIN"));
+    }
+
+    @Test
+    void loginShouldFailWithWrongPassword() throws Exception {
+        LoginRequest request = new LoginRequest(
+                "test-admin@email.com",
+                "test-password123"
+        );
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.title").value("Unauthorized"))
+                .andExpect(jsonPath("$.instance").value("/api/auth/login"))
+                .andExpect(jsonPath("$.detail").value("Invalid email or password"));
     }
 
     @Test

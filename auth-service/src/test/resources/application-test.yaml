@@ -4,4 +4,4 @@ jwt:
 
 admin:
   email: test-admin@email.com
-  password: test-password123
+  password: Test-Password123
