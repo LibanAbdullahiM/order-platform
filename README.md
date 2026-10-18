@@ -58,8 +58,13 @@ For example:
     DB_USER=order_platform_user
     DB_PASSWORD=your_local_password
 
-    JWT_SECRET=replace_with_a_random_secret_at_least_32_bytes_long
+    JWT_SECRET=replacewitharandomsecretatleast32byteslong
     JWT_EXPIRATION_MINUTES=60
+
+Optional: you can configure these variabls to setup the admin bootstrap on startup application
+
+    #ADMIN_EMAIL=
+    #ADMIN_PASSWORD=use-strong-password-here
 
 ---
 
